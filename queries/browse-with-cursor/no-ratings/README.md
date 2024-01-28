@@ -1,0 +1,3 @@
+This query removes the `LEFT JOIN` on the `ModRating` table that performs a subquery that calculates the mod's rating by filtering positive and negative votes using the `positive` column (`boolean`). It then subtracts the negative votes from positive and adds `1` to retrieve the mod's rating.
+
+This query performs **MUCH** faster than the current query since calculating the mod's rating is by far the most expensive operation in the query.

@@ -1,0 +1,1 @@
+This query removes the `WHERE` clause that retrieves a mod's rating from a specific timeframe (e.g. the last day). This query performs around the same as keeping the `WHERE` clause in.
