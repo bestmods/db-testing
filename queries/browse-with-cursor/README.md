@@ -2,6 +2,15 @@ This query is compiled and executed in the [`GetMods()`](https://github.com/best
 
 With that said, our static query used in this repository uses a cursor ID of `14375` with no user ID set (same as the user not being signed into the website). The default `timeframe` date is set to `2024-01-28 11:47:48.889 UTC` in the queries. So it will calculate the mod's rating from after that date.
 
+## Bottlenecks
+### Rating Calculations
+The most expensive operation in this query by far is retrieving the current mod's rating regardless of a timeframe specified. (see [`no-ratings`](./no-ratings/) and [`no-rating-timeframe`](./no-rating-timeframe/))
+
+### Mod Source And Installer Subqueries
+The subqueries to retrieve the mod's sources and installers (along with their source relation) is quite expensive as well. It is not nearly as bad as the rating calculations, though.
+
+Adittionally, using `json_agg()` with a `LEFT JOIN` to retrieve the mod's sources and installers (along with their source relation) seems to make performance far worst **surprisingly** over the current subqueries. (see [`left-join-and-json-agg`](./left-join-and-json-agg/))
+
 ## Important Table Definitions
 The following are important table definitions, indexes, and primary keys related to the queries in this repository. Please note that this is from the development database, but it should be similar on production. The Prisma schema for the website may be found [here](https://github.com/bestmods/bestmods/blob/main/prisma/schema.prisma).
 
