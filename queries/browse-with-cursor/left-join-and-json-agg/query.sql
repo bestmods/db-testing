@@ -9,7 +9,6 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT
     "Mod"."totalViews",
     "Mod"."nsfw",
     (COALESCE("ratingsub"."pos_count", 0) - COALESCE("ratingsub"."neg_count", 0)) + 1 AS "rating",
-    json_agg(DISTINCT "ModDownload".*) AS "ModDownload",
     COALESCE(json_agg(DISTINCT jsonb_build_object(
         'sourceUrl', "ModSource"."sourceUrl",
         'query', "ModSource"."query",
@@ -59,10 +58,6 @@ LEFT JOIN
         "categoryparent"
     ON
         "category"."parentId" = "categoryparent"."id"
-LEFT JOIN
-    "ModDownload"
-ON
-    "Mod"."id" = "ModDownload"."modId"
 LEFT JOIN
     "ModSource"
 ON
