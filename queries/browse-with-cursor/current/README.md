@@ -1,1 +1,1 @@
-This is the current query used on the website as of **January 28th, 2024**. There have been a couple optimizations to this query before this repository was created which cut execution times from over a second second to only *~220ms*!
+This is the current query used on the website as of **January 28th, 2024**. There have been a couple optimizations to this query before this repository was created which cut execution times from over a second second to only *~660ms*!

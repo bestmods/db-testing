@@ -7,8 +7,8 @@ With [Best Mods](https://bestmods.io/) starting to receive more traffic, I wante
 * [Browse With Cursor](./queries/browse-with-cursor)
 
 ## Notes
-* The development database only includes `4599` mods.
-* The production database includes much more mod data (at least `15000` mods and counting, not including sources, installers, etc.).
+* The development database only includes `~15000` mods.
+* The production database includes much more mod data (at least `16000` mods and counting, not including sources, installers, etc.).
 
 ## Credits
 * [Christian Deacon](https://github.com/gamemann)

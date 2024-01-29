@@ -1,6 +1,6 @@
 This query is compiled and executed in the [`GetMods()`](https://github.com/bestmods/bestmods/blob/main/src/utils/content/mod.ts#L11) function when retrieving new mod rows as a user scroll downs on the [Browse](https://bestmods.io/browse) page
 
-With that said, our static query used in this repository uses a cursor ID of `14375` with no user ID set (same as the user not being signed into the website). The default `timeframe` date is set to `2024-01-28 11:47:48.889 UTC` in the queries. So it will calculate the mod's rating from after that date.
+With that said, our static query used in this repository uses a cursor ID of `1000000` with no user ID set (same as the user not being signed into the website). The default `timeframe` date is set to `2024-01-28 11:47:48.889 UTC` in the queries. So it will calculate the mod's rating from after that date.
 
 ## Bottlenecks
 ### Rating Calculations

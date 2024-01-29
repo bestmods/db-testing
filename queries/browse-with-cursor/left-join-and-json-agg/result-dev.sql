@@ -1,100 +1,100 @@
- Limit  (cost=5223.99..5224.02 rows=11 width=420) (actual time=248.711..248.729 rows=11 loops=1)
-   Buffers: shared hit=988, temp read=1302 written=1306
-   ->  Sort  (cost=5223.99..5239.70 rows=6283 width=420) (actual time=248.709..248.726 rows=11 loops=1)
+ Limit  (cost=23266.61..23266.64 rows=11 width=435) (actual time=939.978..939.998 rows=11 loops=1)
+   Buffers: shared hit=3357, temp read=6154 written=6169
+   ->  Sort  (cost=23266.61..23322.83 rows=22485 width=435) (actual time=939.977..939.994 rows=11 loops=1)
          Sort Key: (((COALESCE(ratingsub.pos_count, '0'::bigint) - COALESCE(ratingsub.neg_count, '0'::bigint)) + 1)) DESC, "Mod".id DESC
-         Sort Method: top-N heapsort  Memory: 56kB
-         Buffers: shared hit=988, temp read=1302 written=1306
-         ->  GroupAggregate  (cost=4644.09..5083.90 rows=6283 width=420) (actual time=52.772..246.480 rows=4541 loops=1)
+         Sort Method: top-N heapsort  Memory: 50kB
+         Buffers: shared hit=3357, temp read=6154 written=6169
+         ->  GroupAggregate  (cost=21191.31..22765.26 rows=22485 width=435) (actual time=246.635..932.021 rows=15680 loops=1)
                Group Key: "Mod".id, category.id, categoryparent.id, ratingsub.pos_count, ratingsub.neg_count, "ModSource"."modId", "ModInstaller"."modId"
-               Buffers: shared hit=988, temp read=1302 written=1306
-               ->  Sort  (cost=4644.09..4659.79 rows=6283 width=877) (actual time=52.493..56.772 rows=18203 loops=1)
+               Buffers: shared hit=3357, temp read=6154 written=6169
+               ->  Sort  (cost=21191.31..21247.52 rows=22485 width=894) (actual time=246.403..261.837 rows=64984 loops=1)
                      Sort Key: "Mod".id DESC, category.id, categoryparent.id, ratingsub.pos_count, ratingsub.neg_count, "ModSource"."modId", "ModInstaller"."modId"
-                     Sort Method: external merge  Disk: 10416kB
-                     Buffers: shared hit=980, temp read=1302 written=1306
-                     ->  Hash Left Join  (cost=1007.07..1818.72 rows=6283 width=877) (actual time=11.739..34.601 rows=18203 loops=1)
+                     Sort Method: external merge  Disk: 37704kB
+                     Buffers: shared hit=3349, temp read=6154 written=6169
+                     ->  Hash Left Join  (cost=3616.28..10725.02 rows=22485 width=894) (actual time=22.483..183.850 rows=64984 loops=1)
                            Hash Cond: ("Mod".id = "ModRating"."modId")
-                           Buffers: shared hit=980
-                           ->  Hash Left Join  (cost=1005.11..1800.25 rows=6283 width=814) (actual time=11.725..29.925 rows=18203 loops=1)
+                           Buffers: shared hit=3349, temp read=835 written=835
+                           ->  Hash Left Join  (cost=3614.43..10664.14 rows=22485 width=831) (actual time=22.470..166.036 rows=64984 loops=1)
                                  Hash Cond: ("Mod".id = ratingsub."modId")
-                                 Filter: (((((COALESCE(ratingsub.pos_count, '0'::bigint) - COALESCE(ratingsub.neg_count, '0'::bigint)) + 1) = 1) AND ("Mod".id <= 14375)) OR (((COALESCE(ratingsub.pos_count, '0'::bigint) - COALESCE(ratingsub.neg_count, '0'::bigint)) + 1) < 1))
-                                 Rows Removed by Filter: 148
-                                 Buffers: shared hit=979
-                                 ->  Hash Right Join  (cost=1000.96..1748.21 rows=18200 width=798) (actual time=11.662..24.021 rows=18351 loops=1)
-                                       Hash Cond: ("ModDownload"."modId" = "Mod".id)
-                                       Buffers: shared hit=978
-                                       ->  Seq Scan on "ModDownload"  (cost=0.00..497.00 rows=18200 width=136) (actual time=0.011..4.671 rows=18200 loops=1)
-                                             Buffers: shared hit=315
-                                       ->  Hash  (cost=943.19..943.19 rows=4622 width=666) (actual time=11.641..11.652 rows=4613 loops=1)
-                                             Buckets: 8192  Batches: 1  Memory Usage: 2043kB
-                                             Buffers: shared hit=663
-                                             ->  Hash Left Join  (cost=761.05..943.19 rows=4622 width=666) (actual time=3.564..9.932 rows=4613 loops=1)
-                                                   Hash Cond: (category."parentId" = categoryparent.id)
-                                                   Buffers: shared hit=663
-                                                   ->  Hash Left Join  (cost=759.26..927.80 rows=4622 width=570) (actual time=3.549..8.856 rows=4613 loops=1)
-                                                         Hash Cond: ("Mod"."categoryId" = category.id)
-                                                         Buffers: shared hit=662
-                                                         ->  Hash Left Join  (cost=757.47..912.41 rows=4622 width=470) (actual time=3.533..7.518 rows=4613 loops=1)
-                                                               Hash Cond: ("Mod".id = "ModInstaller"."modId")
-                                                               Buffers: shared hit=661
-                                                               ->  Hash Right Join  (cost=698.20..820.98 rows=4622 width=338) (actual time=2.874..5.772 rows=4607 loops=1)
-                                                                     Hash Cond: ("ModSource"."modId" = "Mod".id)
-                                                                     Buffers: shared hit=641
-                                                                     ->  Hash Left Join  (cost=1.20..111.91 rows=4596 width=114) (actual time=0.015..1.457 rows=4598 loops=1)
-                                                                           Hash Cond: ("ModSource"."sourceUrl" = modsourcesource.url)
-                                                                           Buffers: shared hit=48
-                                                                           ->  Seq Scan on "ModSource"  (cost=0.00..92.96 rows=4596 width=50) (actual time=0.003..0.363 rows=4598 loops=1)
-                                                                                 Buffers: shared hit=47
-                                                                           ->  Hash  (cost=1.09..1.09 rows=9 width=96) (actual time=0.007..0.008 rows=9 loops=1)
-                                                                                 Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                 Filter: (((((COALESCE(ratingsub.pos_count, '0'::bigint) - COALESCE(ratingsub.neg_count, '0'::bigint)) + 1) = 1) AND ("Mod".id <= 1000000)) OR (((COALESCE(ratingsub.pos_count, '0'::bigint) - COALESCE(ratingsub.neg_count, '0'::bigint)) + 1) < 1))
+                                 Rows Removed by Filter: 122
+                                 Buffers: shared hit=3348, temp read=835 written=835
+                                 ->  Hash Left Join  (cost=3610.66..10490.13 rows=64811 width=815) (actual time=22.406..144.768 rows=65106 loops=1)
+                                       Hash Cond: (category."parentId" = categoryparent.id)
+                                       Buffers: shared hit=3347, temp read=835 written=835
+                                       ->  Hash Left Join  (cost=3608.74..10300.49 rows=64811 width=719) (actual time=22.384..129.043 rows=65106 loops=1)
+                                             Hash Cond: ("Mod"."categoryId" = category.id)
+                                             Buffers: shared hit=3346, temp read=835 written=835
+                                             ->  Hash Left Join  (cost=3606.82..10110.85 rows=64811 width=619) (actual time=22.359..110.080 rows=65106 loops=1)
+                                                   Hash Cond: ("Mod".id = "ModSource"."modId")
+                                                   Buffers: shared hit=3345, temp read=835 written=835
+                                                   ->  Hash Left Join  (cost=3029.09..8561.07 rows=64811 width=504) (actual time=15.104..81.301 rows=65093 loops=1)
+                                                         Hash Cond: ("Mod".id = "ModInstaller"."modId")
+                                                         Buffers: shared hit=3182, temp read=835 written=835
+                                                         ->  Hash Right Join  (cost=2861.88..7974.16 rows=64811 width=372) (actual time=13.199..62.552 rows=65093 loops=1)
+                                                               Hash Cond: ("ModDownload"."modId" = "Mod".id)
+                                                               Buffers: shared hit=3128, temp read=835 written=835
+                                                               ->  Seq Scan on "ModDownload"  (cost=0.00..1775.11 rows=64811 width=137) (actual time=0.010..18.253 rows=64811 loops=1)
+                                                                     Buffers: shared hit=1127
+                                                               ->  Hash  (cost=2158.28..2158.28 rows=15728 width=239) (actual time=13.121..13.122 rows=15728 loops=1)
+                                                                     Buckets: 16384  Batches: 2  Memory Usage: 2241kB
+                                                                     Buffers: shared hit=2001, temp written=245
+                                                                     ->  Seq Scan on "Mod"  (cost=0.00..2158.28 rows=15728 width=239) (actual time=0.010..7.165 rows=15728 loops=1)
+                                                                           Filter: visible
+                                                                           Buffers: shared hit=2001
+                                                         ->  Hash  (cost=113.62..113.62 rows=4287 width=132) (actual time=1.894..1.896 rows=4287 loops=1)
+                                                               Buckets: 8192  Batches: 1  Memory Usage: 688kB
+                                                               Buffers: shared hit=54
+                                                               ->  Hash Left Join  (cost=1.20..113.62 rows=4287 width=132) (actual time=0.019..1.297 rows=4287 loops=1)
+                                                                     Hash Cond: ("ModInstaller"."sourceUrl" = modinstallersource.url)
+                                                                     Buffers: shared hit=54
+                                                                     ->  Seq Scan on "ModInstaller"  (cost=0.00..95.87 rows=4287 width=68) (actual time=0.004..0.323 rows=4287 loops=1)
+                                                                           Buffers: shared hit=53
+                                                                     ->  Hash  (cost=1.09..1.09 rows=9 width=96) (actual time=0.007..0.008 rows=9 loops=1)
+                                                                           Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                                                                           Buffers: shared hit=1
+                                                                           ->  Seq Scan on "Source" modinstallersource  (cost=0.00..1.09 rows=9 width=96) (actual time=0.003..0.004 rows=9 loops=1)
                                                                                  Buffers: shared hit=1
-                                                                                 ->  Seq Scan on "Source" modsourcesource  (cost=0.00..1.09 rows=9 width=96) (actual time=0.003..0.004 rows=9 loops=1)
-                                                                                       Buffers: shared hit=1
-                                                                     ->  Hash  (cost=639.22..639.22 rows=4622 width=224) (actual time=2.851..2.852 rows=4599 loops=1)
-                                                                           Buckets: 8192  Batches: 1  Memory Usage: 1228kB
-                                                                           Buffers: shared hit=593
-                                                                           ->  Seq Scan on "Mod"  (cost=0.00..639.22 rows=4622 width=224) (actual time=0.006..1.824 rows=4599 loops=1)
-                                                                                 Filter: visible
-                                                                                 Buffers: shared hit=593
-                                                               ->  Hash  (cost=40.75..40.75 rows=1482 width=132) (actual time=0.655..0.657 rows=1485 loops=1)
-                                                                     Buckets: 2048  Batches: 1  Memory Usage: 232kB
-                                                                     Buffers: shared hit=20
-                                                                     ->  Hash Left Join  (cost=1.20..40.75 rows=1482 width=132) (actual time=0.010..0.456 rows=1485 loops=1)
-                                                                           Hash Cond: ("ModInstaller"."sourceUrl" = modinstallersource.url)
-                                                                           Buffers: shared hit=20
-                                                                           ->  Seq Scan on "ModInstaller"  (cost=0.00..33.82 rows=1482 width=68) (actual time=0.004..0.113 rows=1485 loops=1)
-                                                                                 Buffers: shared hit=19
-                                                                           ->  Hash  (cost=1.09..1.09 rows=9 width=96) (actual time=0.004..0.004 rows=9 loops=1)
-                                                                                 Buckets: 1024  Batches: 1  Memory Usage: 9kB
-                                                                                 Buffers: shared hit=1
-                                                                                 ->  Seq Scan on "Source" modinstallersource  (cost=0.00..1.09 rows=9 width=96) (actual time=0.001..0.002 rows=9 loops=1)
-                                                                                       Buffers: shared hit=1
-                                                         ->  Hash  (cost=1.35..1.35 rows=35 width=104) (actual time=0.013..0.014 rows=35 loops=1)
-                                                               Buckets: 1024  Batches: 1  Memory Usage: 11kB
-                                                               Buffers: shared hit=1
-                                                               ->  Seq Scan on "Category" category  (cost=0.00..1.35 rows=35 width=104) (actual time=0.002..0.007 rows=35 loops=1)
+                                                   ->  Hash  (cost=381.17..381.17 rows=15725 width=115) (actual time=7.239..7.242 rows=15725 loops=1)
+                                                         Buckets: 16384  Batches: 1  Memory Usage: 2089kB
+                                                         Buffers: shared hit=163
+                                                         ->  Hash Left Join  (cost=1.20..381.17 rows=15725 width=115) (actual time=0.019..4.619 rows=15725 loops=1)
+                                                               Hash Cond: ("ModSource"."sourceUrl" = modsourcesource.url)
+                                                               Buffers: shared hit=163
+                                                               ->  Seq Scan on "ModSource"  (cost=0.00..319.25 rows=15725 width=51) (actual time=0.005..1.033 rows=15725 loops=1)
+                                                                     Buffers: shared hit=162
+                                                               ->  Hash  (cost=1.09..1.09 rows=9 width=96) (actual time=0.005..0.005 rows=9 loops=1)
+                                                                     Buckets: 1024  Batches: 1  Memory Usage: 9kB
                                                                      Buffers: shared hit=1
-                                                   ->  Hash  (cost=1.35..1.35 rows=35 width=100) (actual time=0.012..0.012 rows=35 loops=1)
-                                                         Buckets: 1024  Batches: 1  Memory Usage: 11kB
+                                                                     ->  Seq Scan on "Source" modsourcesource  (cost=0.00..1.09 rows=9 width=96) (actual time=0.001..0.002 rows=9 loops=1)
+                                                                           Buffers: shared hit=1
+                                             ->  Hash  (cost=1.41..1.41 rows=41 width=104) (actual time=0.019..0.019 rows=41 loops=1)
+                                                   Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                                                   Buffers: shared hit=1
+                                                   ->  Seq Scan on "Category" category  (cost=0.00..1.41 rows=41 width=104) (actual time=0.005..0.010 rows=41 loops=1)
                                                          Buffers: shared hit=1
-                                                         ->  Seq Scan on "Category" categoryparent  (cost=0.00..1.35 rows=35 width=100) (actual time=0.002..0.006 rows=35 loops=1)
-                                                               Buffers: shared hit=1
-                                 ->  Hash  (cost=3.45..3.45 rows=56 width=20) (actual time=0.054..0.055 rows=59 loops=1)
+                                       ->  Hash  (cost=1.41..1.41 rows=41 width=100) (actual time=0.013..0.014 rows=41 loops=1)
+                                             Buckets: 1024  Batches: 1  Memory Usage: 12kB
+                                             Buffers: shared hit=1
+                                             ->  Seq Scan on "Category" categoryparent  (cost=0.00..1.41 rows=41 width=100) (actual time=0.002..0.006 rows=41 loops=1)
+                                                   Buffers: shared hit=1
+                                 ->  Hash  (cost=3.15..3.15 rows=49 width=20) (actual time=0.047..0.049 rows=49 loops=1)
                                        Buckets: 1024  Batches: 1  Memory Usage: 11kB
                                        Buffers: shared hit=1
-                                       ->  Subquery Scan on ratingsub  (cost=2.33..3.45 rows=56 width=20) (actual time=0.032..0.045 rows=59 loops=1)
+                                       ->  Subquery Scan on ratingsub  (cost=2.17..3.15 rows=49 width=20) (actual time=0.031..0.042 rows=49 loops=1)
                                              Buffers: shared hit=1
-                                             ->  HashAggregate  (cost=2.33..2.89 rows=56 width=20) (actual time=0.031..0.039 rows=59 loops=1)
+                                             ->  HashAggregate  (cost=2.17..2.66 rows=49 width=20) (actual time=0.030..0.037 rows=49 loops=1)
                                                    Group Key: "ModRating_1"."modId"
                                                    Buffers: shared hit=1
-                                                   ->  Seq Scan on "ModRating" "ModRating_1"  (cost=0.00..1.76 rows=76 width=5) (actual time=0.004..0.008 rows=76 loops=1)
+                                                   ->  Seq Scan on "ModRating" "ModRating_1"  (cost=0.00..1.67 rows=67 width=5) (actual time=0.003..0.007 rows=67 loops=1)
                                                          Buffers: shared hit=1
-                           ->  Hash  (cost=1.95..1.95 rows=1 width=67) (actual time=0.006..0.007 rows=0 loops=1)
+                           ->  Hash  (cost=1.84..1.84 rows=1 width=67) (actual time=0.006..0.006 rows=0 loops=1)
                                  Buckets: 1024  Batches: 1  Memory Usage: 8kB
                                  Buffers: shared hit=1
-                                 ->  Seq Scan on "ModRating"  (cost=0.00..1.95 rows=1 width=67) (actual time=0.006..0.006 rows=0 loops=1)
+                                 ->  Seq Scan on "ModRating"  (cost=0.00..1.84 rows=1 width=67) (actual time=0.005..0.005 rows=0 loops=1)
                                        Filter: ("userId" = ''::text)
-                                       Rows Removed by Filter: 76
+                                       Rows Removed by Filter: 67
                                        Buffers: shared hit=1
- Planning Time: 3.002 ms
- Execution Time: 250.065 ms
+ Planning Time: 4.957 ms
+ Execution Time: 944.329 ms
 (99 rows)
