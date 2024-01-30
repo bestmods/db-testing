@@ -74,51 +74,61 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT
                 "Mod"."id" = "ModInstaller"."modId"
         ) AS "subquery"
     ) AS "ModInstaller",
-    json_build_object(
-        'parent', 
-        CASE 
-            WHEN "categoryparent"."id" IS NOT NULL THEN 
-                json_build_object(
-                    'name', "categoryparent"."name",
-                    'url', "categoryparent"."url",
-                    'icon', "categoryparent"."icon"
-                )
-            ELSE
-                NULL
-        END,
-        'name', "category"."name",
-        'url', "category"."url",
-        'icon', "category"."icon"
+    (
+        SELECT jsonb_build_object(
+            'name', "subquery"."name",
+            'url', "subquery"."url",
+            'icon', "subquery"."icon",
+            'parent', CASE 
+                WHEN "subquery"."parentId" IS NOT NULL THEN
+                    jsonb_build_object(
+                        'name', "subquery"."parentName",
+                        'url', "subquery"."parentUrl",
+                        'icon', "subquery"."parentIcon"
+                    )
+                ELSE
+                    NULL
+            END
+        ) AS "Category"
+        FROM (
+            SELECT DISTINCT ON ("Category"."id")
+                "Category"."name",
+                "Category"."url",
+                "Category"."icon",
+                "Category"."parentId",
+                "categoryparent"."name" AS "parentName",
+                "categoryparent"."url" AS "parentUrl",
+                "categoryparent"."icon" AS "parentIcon"
+            FROM
+                "Category"
+            LEFT JOIN
+                "Category"
+                AS
+                    "categoryparent"
+                ON
+                    "Category"."id" = "categoryparent"."id"
+            WHERE
+                "Category"."id" = "Mod"."categoryId"
+        ) AS "subquery"
     ) AS "category",
-    json_agg(DISTINCT "ModRating".*) AS "ModRating"
+    (
+        SELECT json_agg(jsonb_build_object(
+            'positive', "subquery"."positive"
+        )) AS "ModRating"
+        FROM (
+            SELECT
+
+                "ModRating"."positive"
+            FROM
+                "ModRating"
+            WHERE
+                    "ModRating"."modId" = "Mod"."id"
+                AND
+                    "ModRating"."userId" = ''
+        ) AS "subquery"
+    ) AS "ModRating"
 FROM 
     "Mod"
-LEFT JOIN 
-    "Category"
-    AS
-        "category"
-    ON
-        "Mod"."categoryId" = "category"."id"
-LEFT JOIN
-    "Category"
-    AS
-        "categoryparent"
-    ON
-        "category"."parentId" = "categoryparent"."id"
-LEFT JOIN
-    "ModSource"
-ON
-    "Mod"."id" = "ModSource"."modId"
-LEFT JOIN
-    "ModInstaller"
-ON 
-    "Mod"."id" = "ModInstaller"."modId"
-LEFT JOIN
-    "ModRating"
-    ON
-            "Mod"."id" = "ModRating"."modId"
-        AND
-            "ModRating"."userId" = ''
 WHERE "Mod"."visible" = true AND 
         (
             (
@@ -132,9 +142,7 @@ WHERE "Mod"."visible" = true AND
             )
         )
 GROUP BY
-    "Mod"."id",
-    "category"."id",
-    "categoryparent"."id"
+    "Mod"."id"
 ORDER BY
     "rating" DESC,"Mod"."id" DESC
 LIMIT 11;
