@@ -8,7 +8,6 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT
     "Mod"."totalDownloads",
     "Mod"."totalViews",
     "Mod"."nsfw",
-    0 + 1 AS "rating",
     (
         SELECT json_agg(jsonb_build_object(
             'sourceUrl', "subquery"."sourceUrl",
@@ -129,20 +128,6 @@ EXPLAIN (ANALYZE, BUFFERS) SELECT
     ) AS "ModRating"
 FROM 
     "Mod"
-WHERE "Mod"."visible" = true AND 
-        (
-            (
-                    0 + 1 = 1
-                AND
-                    "Mod"."id" <= 1000000
-            )
-            OR
-            (
-                0 + 1 < 1   
-            )
-        )
-GROUP BY
-    "Mod"."id"
 ORDER BY
-    "rating" DESC,"Mod"."id" DESC
+    "Mod"."id" DESC
 LIMIT 11;

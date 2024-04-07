@@ -158,5 +158,5 @@ GROUP BY
     "ratingsub"."pos_count",
     "ratingsub"."neg_count"
 ORDER BY
-    "rating" DESC,"Mod"."id" DESC
+    "rating" DESC, "Mod"."id" DESC
 LIMIT 11;
