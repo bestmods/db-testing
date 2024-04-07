@@ -1,0 +1,1 @@
+In this query, we use a completely random rating for each row and order by it. This is basically the same as doing `ORDER BY random()`. The combination of grouping by `"Mod"."id"` (*+~60ms*) and ordering by rows randomly (*+~60ms*) results in the same performance as our current query.
